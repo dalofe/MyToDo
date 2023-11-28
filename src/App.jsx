@@ -52,8 +52,8 @@ function App() {
       <Box textAlign="right">
         <ColorModeSwitcher />
       </Box>
-      <Container marginTop="10rem">
-        <Heading pb="1rem">My ToDoF</Heading>
+      <Container marginTop="5rem">
+        <Heading pb="1rem">My ToDo</Heading>
         <Form setTodo={setTodo} />
         {uncheckedList.length ? (
           <>
