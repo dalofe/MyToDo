@@ -5,10 +5,12 @@ const TodoItem = ({element, changeHandler, editInput, clickRemoveHandler}) => {
   return <Box key={element.id} width='100%'>
             <InputGroup size='md'>
               <Checkbox
+                pr='1rem'
                 isChecked={element.checked}
                 onChange={(e) => changeHandler(e.target.checked, element.id)}
               />
               <Input
+                pl={0}
                 pr='4.5rem'
                 type={'text'}
                 value={element.value}
