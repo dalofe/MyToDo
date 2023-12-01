@@ -52,7 +52,7 @@ function App() {
       <Box textAlign="right">
         <ColorModeSwitcher />
       </Box>
-      <Container marginTop="10rem">
+      <Container marginTop={["5rem", "10rem"]}>
         <Heading pb="1rem">My ToDo</Heading>
         <Form setTodo={setTodo} />
         {uncheckedList.length ? (
@@ -68,7 +68,7 @@ function App() {
             ))}
           </>
         ) : (
-          <Text>Nothing to do!</Text>
+          <Text pt='1rem' align='center'>Nothing to do!</Text>
         )}
         <Box p='1rem'>
           <Divider />
