@@ -10,14 +10,13 @@ export const Form = ({setTodo}) => {
 
   const submitInput = (e) => {
     e.preventDefault();
-    //console.log("submit!");
     const input = e.target.querySelector("input");
     const inputValue = input?.value || "";
     const newId = crypto.randomUUID();
 
     setTodo((prevTodo) => [
       ...prevTodo,
-      { id: newId, value: inputValue, checked: false },
+      {id: newId, value: inputValue, checked: false},
     ]);
     setInputText("");
   };

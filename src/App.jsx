@@ -1,23 +1,18 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { TodoItemMemo as TodoItem } from "./components/TodoItem";
 import { Form } from "./components/Form";
 import { Box, Container, Divider, Heading, Text } from "@chakra-ui/react";
 import { ColorModeSwitcher } from "./components/ColorModeSwitcher";
 
-const initialList = [
-  { id: "0", value: "orange", checked: false },
-  { id: "1", value: "paper", checked: false },
-  { id: "2", value: "bread", checked: false },
-  { id: "3", value: "tomatoes", checked: true },
-];
-
 function App() {
-  const [todo, setTodo] = useState(initialList);
+  const [todo, setTodo] = useState(JSON.parse(localStorage.getItem('todos')) || []);
 
   const checkedList = todo.filter((element) => element.checked);
   const uncheckedList = todo.filter((element) => !element.checked);
 
-  //console.log("todo: ", todo);
+  useEffect(() => {
+    localStorage.setItem('todos', JSON.stringify(todo));
+  }, [todo]);
 
   const changeHandler = (itemCheck, id) => {
     const updatedTodo = todo.map((element) => {
