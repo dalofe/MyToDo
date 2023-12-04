@@ -5,17 +5,14 @@ import { Box, Container, Divider, Heading, Text } from "@chakra-ui/react";
 import { ColorModeSwitcher } from "./components/ColorModeSwitcher";
 
 function App() {
-  const [todo, setTodo] = useState([]);
+  const [todo, setTodo] = useState(JSON.parse(localStorage.getItem('todos')) || []);
 
   const checkedList = todo.filter((element) => element.checked);
   const uncheckedList = todo.filter((element) => !element.checked);
 
   useEffect(() => {
-    const todos = JSON.parse(localStorage.getItem('todos'));
-    if (todos) {
-      setTodo(todos);
-    }
-  }, [])
+    localStorage.setItem('todos', JSON.stringify(todo));
+  }, [todo]);
 
   const changeHandler = (itemCheck, id) => {
     const updatedTodo = todo.map((element) => {
@@ -27,13 +24,10 @@ function App() {
     });
 
     setTodo(updatedTodo);
-    localStorage.setItem('todos', JSON.stringify(updatedTodo));
   };
 
   const clickRemoveHandler = (id) => {
-    const updatedTodo = todo.filter((element) => element.id !== id);
-    setTodo(updatedTodo);
-    localStorage.setItem('todos', JSON.stringify(updatedTodo));
+    setTodo(todo.filter((element) => element.id !== id));
   };
 
   const editInput = (id, updatedValue) => {
@@ -46,7 +40,6 @@ function App() {
     });
 
     setTodo(updatedTodo);
-    localStorage.setItem('todos', JSON.stringify(updatedTodo));
   };
 
   return (
