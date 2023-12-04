@@ -14,11 +14,19 @@ export const Form = ({setTodo}) => {
     const input = e.target.querySelector("input");
     const inputValue = input?.value || "";
     const newId = crypto.randomUUID();
+    let todos = JSON.parse(localStorage.getItem('todos'));
+    const newElement = {id: newId, value: inputValue, checked: false};
+    if(todos){
+      todos.push(newElement);
+    } else {
+      todos = [newElement];
+    }
 
     setTodo((prevTodo) => [
       ...prevTodo,
-      { id: newId, value: inputValue, checked: false },
+      newElement,
     ]);
+    localStorage.setItem('todos', JSON.stringify(todos));
     setInputText("");
   };
 
