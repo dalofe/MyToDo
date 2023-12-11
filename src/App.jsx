@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { TodoItemMemo as TodoItem } from "./components/TodoItem";
 import { Form } from "./components/Form";
-import { Box, Container, Divider, Heading, Text } from "@chakra-ui/react";
+import { Box, Button, Container, Divider, Heading, Tab, TabList, TabPanel, TabPanels, Tabs, Text, VStack } from "@chakra-ui/react";
 import { ColorModeSwitcher } from "./components/ColorModeSwitcher";
 
 function App() {
@@ -43,8 +43,8 @@ function App() {
   };
 
   return (
-    <>
-      <Box textAlign="right">
+    <VStack height="100%">
+      <Box textAlign="right" width="100%">
         <ColorModeSwitcher />
       </Box>
       <Container marginTop={["5rem", "10rem"]}>
@@ -81,7 +81,18 @@ function App() {
           ))}
         </>
       </Container>
-    </>
+      <Tabs variant='soft-rounded' width="100%" mt="auto" p="1rem">
+        <TabPanels>
+          <TabPanel>
+            <p>one!</p>
+          </TabPanel>
+        </TabPanels>
+        <TabList>
+          <Button>+</Button>
+          <Tab>One</Tab>
+        </TabList>
+      </Tabs>
+    </VStack>
   );
 }
 
