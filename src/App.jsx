@@ -3,9 +3,10 @@ import { TodoItemMemo as TodoItem } from "./components/TodoItem";
 import { Form } from "./components/Form";
 import { Box, Button, Container, Divider, HStack, Heading, Text, VStack } from "@chakra-ui/react";
 import { ColorModeSwitcher } from "./components/ColorModeSwitcher";
+import { IoClose } from "react-icons/io5";
 
 function App() {
-  const [todo, setTodo] = useState(JSON.parse(localStorage.getItem('todos')) || []);
+  const [todo, setTodo] = useState(JSON.parse(localStorage.getItem('todos')) || [new Array()]);
   const [activeTodo, setActiveTodo] = useState(0);
   const checkedList = (todo.length) ? todo[activeTodo].filter((element) => element.checked) : [];
   const uncheckedList = (todo.length) ? todo[activeTodo].filter((element) => !element.checked) : [];
@@ -63,11 +64,22 @@ function App() {
     setActiveTodo(prevActiveTodo => prevActiveTodo + 1);
   }
 
+  const deleteTodoHandler = () => {
+    const updatedTodo = todo.filter((element, index) => index !== activeTodo);
+    setTodo(updatedTodo);
+    setActiveTodo(0);
+  };
+
   return (
     <VStack height="100%">
-      <Box textAlign="right" width="100%">
+      <HStack width="100%" justify='space-between'>
         <ColorModeSwitcher />
-      </Box>
+        {todo.length > 1 &&
+          <Button onClick={deleteTodoHandler}>
+            <IoClose />
+          </Button>
+        }
+      </HStack>
       <Container marginTop={["5rem", "10rem"]}>
         <Heading pb="1rem">My ToDo</Heading>
         <Form setTodo={setTodo} activeTodo={activeTodo} arrayTodo={todo} />
@@ -105,9 +117,15 @@ function App() {
       <HStack width="100%" mt="auto" p="1rem">
         <Button onClick={addTodoHandler}>+</Button>
         {todo.map((element, index) => {
-          let colorSchemeValue = "gray";
-          if(index === activeTodo) colorSchemeValue = "yellow";
-          return <Button key={index} colorScheme={colorSchemeValue} onClick={() => setActiveTodo(index)}>{index}</Button>
+          return (
+            <Button 
+              key={index}
+              onClick={() => setActiveTodo(index)}
+              isActive={index === activeTodo ? true : false}
+            >
+              {index}
+            </Button>
+          )
         })}
       </HStack>
     </VStack>
