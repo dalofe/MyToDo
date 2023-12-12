@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
 import { TodoItemMemo as TodoItem } from "./components/TodoItem";
 import { Form } from "./components/Form";
-import { Box, Button, Container, Divider, HStack, Heading, Text, VStack } from "@chakra-ui/react";
+import { Box, Button, Container, Divider, HStack, Heading, Input, Text, VStack } from "@chakra-ui/react";
 import { ColorModeSwitcher } from "./components/ColorModeSwitcher";
 import { IoClose } from "react-icons/io5";
 
 function App() {
-  const [todo, setTodo] = useState(JSON.parse(localStorage.getItem('todos')) || [new Array()]);
+  const [todo, setTodo] = useState(JSON.parse(localStorage.getItem('todos')) || [new Array({title: 'My ToDo'})]);
   const [activeTodo, setActiveTodo] = useState(0);
   const checkedList = (todo.length) ? todo[activeTodo].filter((element) => element.checked) : [];
-  const uncheckedList = (todo.length) ? todo[activeTodo].filter((element) => !element.checked) : [];
+  const uncheckedList = (todo.length) ? todo[activeTodo].filter((element) => element.checked !== undefined && !element.checked) : [];
 
   useEffect(() => {
     localStorage.setItem('todos', JSON.stringify(todo));
@@ -60,7 +60,7 @@ function App() {
   };
 
   const addTodoHandler = () => {
-    setTodo(prevTodo => [...prevTodo, new Array()]);
+    setTodo(prevTodo => [...prevTodo, new Array({title: `MyTodo_${activeTodo + 1}`})]);
     setActiveTodo(prevActiveTodo => prevActiveTodo + 1);
   }
 
@@ -69,6 +69,27 @@ function App() {
     setTodo(updatedTodo);
     setActiveTodo(0);
   };
+
+  const title = todo[activeTodo][0]?.title;
+  const updateTitleHandler = (e) => {
+    const updatedTitle = e.target.value;
+    const updatedTodo = todo[activeTodo].map(element => {
+      if(element.title !== undefined){
+        return {...element, title: updatedTitle}
+      } else {
+        return element;
+      }
+    });
+
+    const updatedList = todo.map((list, index) => {
+      if(index === activeTodo){
+        return updatedTodo;
+      } else {
+        return list;
+      }
+    })
+    setTodo(updatedList);
+  }
 
   return (
     <VStack height="100%">
@@ -81,7 +102,16 @@ function App() {
         }
       </HStack>
       <Container marginTop={["5rem", "10rem"]}>
-        <Heading pb="1rem">My ToDo</Heading>
+        <Input
+          pl={0}
+          pb="1rem"
+          border="none"
+          fontWeight="bold"
+          fontSize="3xl"
+          value={title}
+          onChange={updateTitleHandler}
+          _focusVisible={{ boxShadow: 'none'}}
+        />
         <Form setTodo={setTodo} activeTodo={activeTodo} arrayTodo={todo} />
         {uncheckedList.length ? (
           <>
@@ -115,7 +145,7 @@ function App() {
         </>
       </Container>
       <HStack width="100%" mt="auto" p="1rem">
-        <Button onClick={addTodoHandler}>+</Button>
+        <Button colorScheme='green' onClick={addTodoHandler}>+</Button>
         {todo.map((element, index) => {
           return (
             <Button 
@@ -123,7 +153,7 @@ function App() {
               onClick={() => setActiveTodo(index)}
               isActive={index === activeTodo ? true : false}
             >
-              {index}
+              {element[0].title}
             </Button>
           )
         })}

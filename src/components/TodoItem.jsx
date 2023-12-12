@@ -17,8 +17,8 @@ const TodoItem = ({element, changeHandler, editInput, clickRemoveHandler}) => {
               />
               <Input
                 pl={0}
-                pr={'4.5rem'}
-                type={'text'}
+                pr="4.5rem"
+                type="text"
                 value={element.value}
                 onChange={(e) => editInput(element.id, e.target.value)}
                 onFocus={() => setFocusInput(true)}
