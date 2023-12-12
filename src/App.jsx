@@ -1,21 +1,22 @@
 import { useEffect, useState } from "react";
 import { TodoItemMemo as TodoItem } from "./components/TodoItem";
 import { Form } from "./components/Form";
-import { Box, Container, Divider, Heading, Text } from "@chakra-ui/react";
+import { Box, Button, Container, Divider, HStack, Heading, Input, Text, VStack } from "@chakra-ui/react";
 import { ColorModeSwitcher } from "./components/ColorModeSwitcher";
+import { IoClose } from "react-icons/io5";
 
 function App() {
-  const [todo, setTodo] = useState(JSON.parse(localStorage.getItem('todos')) || []);
-
-  const checkedList = todo.filter((element) => element.checked);
-  const uncheckedList = todo.filter((element) => !element.checked);
+  const [todo, setTodo] = useState(JSON.parse(localStorage.getItem('todos')) || [new Array({title: 'My ToDo'})]);
+  const [activeTodo, setActiveTodo] = useState(0);
+  const checkedList = (todo.length) ? todo[activeTodo].filter((element) => element.checked) : [];
+  const uncheckedList = (todo.length) ? todo[activeTodo].filter((element) => element.checked !== undefined && !element.checked) : [];
 
   useEffect(() => {
     localStorage.setItem('todos', JSON.stringify(todo));
   }, [todo]);
 
   const changeHandler = (itemCheck, id) => {
-    const updatedTodo = todo.map((element) => {
+    const updatedTodo = todo[activeTodo].map((element) => {
       if (element.id === id) {
         return { ...element, checked: itemCheck };
       } else {
@@ -23,11 +24,27 @@ function App() {
       }
     });
 
-    setTodo(updatedTodo);
+    const updatedList = todo.map((list, index) => {
+      if(index === activeTodo){
+        return updatedTodo;
+      } else {
+        return list;
+      }
+    })
+
+    setTodo(updatedList);
   };
 
   const clickRemoveHandler = (id) => {
-    setTodo(todo.filter((element) => element.id !== id));
+    const updatedTodo = todo[activeTodo].filter(element => element.id !== id);
+    const updatedList = todo.map((list, index) => {
+      if(index === activeTodo){
+        return updatedTodo;
+      } else {
+        return list;
+      }
+    })
+    setTodo(updatedList);
   };
 
   const editInput = (id, updatedValue) => {
@@ -42,14 +59,60 @@ function App() {
     setTodo(updatedTodo);
   };
 
+  const addTodoHandler = () => {
+    setTodo(prevTodo => [...prevTodo, new Array({title: `MyTodo_${activeTodo + 1}`})]);
+    setActiveTodo(prevActiveTodo => prevActiveTodo + 1);
+  }
+
+  const deleteTodoHandler = () => {
+    const updatedTodo = todo.filter((element, index) => index !== activeTodo);
+    setTodo(updatedTodo);
+    setActiveTodo(0);
+  };
+
+  const title = todo[activeTodo][0]?.title;
+  const updateTitleHandler = (e) => {
+    const updatedTitle = e.target.value;
+    const updatedTodo = todo[activeTodo].map(element => {
+      if(element.title !== undefined){
+        return {...element, title: updatedTitle}
+      } else {
+        return element;
+      }
+    });
+
+    const updatedList = todo.map((list, index) => {
+      if(index === activeTodo){
+        return updatedTodo;
+      } else {
+        return list;
+      }
+    })
+    setTodo(updatedList);
+  }
+
   return (
-    <>
-      <Box textAlign="right">
+    <VStack height="100%">
+      <HStack width="100%" justify='space-between'>
         <ColorModeSwitcher />
-      </Box>
+        {todo.length > 1 &&
+          <Button onClick={deleteTodoHandler}>
+            <IoClose />
+          </Button>
+        }
+      </HStack>
       <Container marginTop={["5rem", "10rem"]}>
-        <Heading pb="1rem">My ToDo</Heading>
-        <Form setTodo={setTodo} />
+        <Input
+          pl={0}
+          pb="1rem"
+          border="none"
+          fontWeight="bold"
+          fontSize="3xl"
+          value={title}
+          onChange={updateTitleHandler}
+          _focusVisible={{ boxShadow: 'none'}}
+        />
+        <Form setTodo={setTodo} activeTodo={activeTodo} arrayTodo={todo} />
         {uncheckedList.length ? (
           <>
             {uncheckedList.map((element) => (
@@ -81,7 +144,21 @@ function App() {
           ))}
         </>
       </Container>
-    </>
+      <HStack width="100%" mt="auto" p="1rem">
+        <Button colorScheme='green' onClick={addTodoHandler}>+</Button>
+        {todo.map((element, index) => {
+          return (
+            <Button 
+              key={index}
+              onClick={() => setActiveTodo(index)}
+              isActive={index === activeTodo ? true : false}
+            >
+              {element[0].title}
+            </Button>
+          )
+        })}
+      </HStack>
+    </VStack>
   );
 }
 
