@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
 import { TodoItemMemo as TodoItem } from "./components/TodoItem";
 import { Form } from "./components/Form";
-import { Box, Button, Container, Divider, HStack, Heading, Input, Text, VStack } from "@chakra-ui/react";
+import { Box, Button, CloseButton, Container, Divider, HStack, Heading, Input, Text, VStack } from "@chakra-ui/react";
 import { ColorModeSwitcher } from "./components/ColorModeSwitcher";
-import { IoClose } from "react-icons/io5";
 
 function App() {
   const [todo, setTodo] = useState(JSON.parse(localStorage.getItem('todos')) || [new Array({title: 'My ToDo'})]);
@@ -91,14 +90,22 @@ function App() {
     setTodo(updatedList);
   }
 
+  const handleScrollTabs = (e) => {
+    const container = e.target;
+    const scrollAmount = e.deltaY;
+    container.scrollTo({
+      top: 0,
+      left: container.scrollLeft + scrollAmount,
+      behavior: 'smooth'
+    });
+  };
+
   return (
-    <VStack height="100%">
+    <VStack height="100vh">
       <HStack width="100%" justify='space-between'>
         <ColorModeSwitcher />
         {todo.length > 1 &&
-          <Button onClick={deleteTodoHandler}>
-            <IoClose />
-          </Button>
+          <CloseButton onClick={deleteTodoHandler} />
         }
       </HStack>
       <Container marginTop={["5rem", "10rem"]}>
@@ -144,14 +151,16 @@ function App() {
           ))}
         </>
       </Container>
-      <HStack width="100%" mt="auto" p="1rem">
-        <Button colorScheme='green' onClick={addTodoHandler}>+</Button>
+      <HStack width="100%" mt="auto" p="1rem" overflowX="auto" flexWrap="nowrap" onWheel={handleScrollTabs}>
+        <Button colorScheme='green' onClick={addTodoHandler} width={["100vw","auto"]}>+</Button>
         {todo.map((element, index) => {
           return (
             <Button 
               key={index}
               onClick={() => setActiveTodo(index)}
               isActive={index === activeTodo ? true : false}
+              width={["100vw","auto"]}
+              minWidth="auto"
             >
               {element[0].title}
             </Button>
